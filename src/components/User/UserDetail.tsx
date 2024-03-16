@@ -50,7 +50,7 @@ const UserDetail = () => {
               Role
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-              {data?.data?.role == undefined ? "User" : "Admin"}
+              {data?.data?.role}
             </dd>
           </div>
         </dl>
