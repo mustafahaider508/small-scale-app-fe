@@ -12,6 +12,7 @@ type Props = {
 };
 
 const DeleteModal = ({ isOpen, setIsOpen, id, setSuccess }: Props) => {
+  const [message, setMessage] = useState("");
   const queryClient: any = new QueryClient();
   const { deleteUser } = service;
   function closeModal() {
@@ -23,20 +24,24 @@ const DeleteModal = ({ isOpen, setIsOpen, id, setSuccess }: Props) => {
     useQuery({
       queryKey: ["users"],
       queryFn: () => deleteUser(id),
-      enabled: false,
+      enabled: !!id,
     });
 
   useEffect(() => {
     if (status == "success") {
-      setSuccess(true);
-      toast.success("User Deleted");
-      queryClient.invalidateQueries(["users"]);
+      setMessage(data?.message);
       closeModal();
+      setSuccess(true);
+      queryClient.invalidateQueries(["users"]);
       setTimeout(() => {
-        setSuccess(false);
+        setMessage("");
       }, 2000);
     }
-  }, [status, data]);
+  }, [status]);
+
+  useEffect(() => {
+    if (message !== "") toast.success(message);
+  }, [message]);
 
   return (
     <>

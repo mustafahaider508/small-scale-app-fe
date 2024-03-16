@@ -1,7 +1,7 @@
 import axios from "axios";
-
+const token = JSON.parse(localStorage.getItem("token") || "null");
 const headers = {
-  Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJJZCI6IjY1ZjJlNDM4OTA0YjQ1NTRlOGYyODVkOCIsImVtYWlsIjoia2hhbkBnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNzEwNDE5NTQ5LCJleHAiOjE3MTA4NTE1NDl9.804IR_L2KDSbsdSxFsFlGhMTinnN2ksd3NGILrH9ioY`,
+  Authorization: `${token}`,
   "Content-Type": "application/json",
 };
 

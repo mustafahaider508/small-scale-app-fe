@@ -14,7 +14,6 @@ import Login from "./components/Login";
 
 function App() {
   const token = JSON.parse(localStorage.getItem("token") || "null");
-  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const router = createBrowserRouter([
     {

@@ -294,7 +294,7 @@ export default function Layout() {
                                 localStorage.removeItem("token");
                                 localStorage.removeItem("user");
                                 window.location.replace(
-                                  "http://localhost:3000/login"
+                                  `${process.env.REACT_APP_CLIENTURL}/login`
                                 );
                               }}
                               className={classNames(
