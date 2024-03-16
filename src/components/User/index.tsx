@@ -2,12 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import UserModal from "../Modals/UserModal";
 import DeleteModal from "../Modals/DeleteModal";
-import {
-  QueryClient,
-  keepPreviousData,
-  useMutation,
-  useQuery,
-} from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { service } from "../../service/api";
 import { toast } from "react-toastify";
 
@@ -34,12 +29,10 @@ const User = ({ id, setId }: Props) => {
   const [success, setSuccess] = useState<boolean>(false);
   const { getUsers } = service;
 
-  const { isPending, isLoading, isError, data, isFetching, status, refetch } =
-    useQuery({
-      queryKey: ["users", page],
-      queryFn: () => getUsers(page),
-      enabled: !!page,
-    });
+  const { isLoading, isError, data, isFetching, status, refetch } = useQuery({
+    queryKey: ["users", page],
+    queryFn: () => getUsers(page),
+  });
 
   const queryClient = new QueryClient();
 
@@ -52,8 +45,7 @@ const User = ({ id, setId }: Props) => {
 
   const handlenextClick = async () => {
     const nextPage = Math.min(page + 1, Math.ceil(data?.data?.count / 10));
-    await queryClient.invalidateQueries(["users", nextPage] as any);
-    await refetch();
+    await refetch(["users", nextPage] as any);
     setPage(nextPage);
     window.location.replace(`/user?pageId=${nextPage}`);
   };
@@ -63,7 +55,12 @@ const User = ({ id, setId }: Props) => {
   }, [data]);
 
   useEffect(() => {
-    if (success == true) refetch(["users"] as any);
+    if (success == true) {
+      refetch(["users"] as any);
+      setTimeout(() => {
+        setSuccess(false);
+      }, 2000);
+    }
   }, [success]);
 
   return (
@@ -122,7 +119,7 @@ const User = ({ id, setId }: Props) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {(isLoading || isFetching || isPending) && <p>Loading...</p>}
+                  {isLoading && <p>Loading...</p>}
                   {isError && <p>Error fetching data</p>}
                   {status === "success" &&
                     userData?.map((person: any) => (

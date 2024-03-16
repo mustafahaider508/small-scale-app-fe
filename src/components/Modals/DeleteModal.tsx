@@ -19,23 +19,18 @@ const DeleteModal = ({ isOpen, setIsOpen, id, setSuccess }: Props) => {
     setIsOpen(false);
   }
 
-  //Delete a User Query
-  const { isPending, isLoading, isError, data, isFetching, status, refetch } =
-    useQuery({
-      queryKey: ["users"],
-      queryFn: () => deleteUser(id),
-      enabled: !!id,
-    });
+  // Delete a User Query
+  const { isLoading, isError, data, isFetching, status, refetch } = useQuery({
+    queryKey: ["users", id],
+    queryFn: () => deleteUser(id),
+    enabled: false,
+  });
 
   useEffect(() => {
     if (status == "success") {
-      setMessage(data?.message);
       closeModal();
       setSuccess(true);
       queryClient.invalidateQueries(["users"]);
-      setTimeout(() => {
-        setMessage("");
-      }, 2000);
     }
   }, [status]);
 
@@ -79,7 +74,12 @@ const DeleteModal = ({ isOpen, setIsOpen, id, setSuccess }: Props) => {
 
                   <div className="flex justify-center gap-2">
                     <button
-                      onClick={() => refetch(["users", id] as any)}
+                      onClick={() => {
+                        setTimeout(() => {
+                          toast.success("User Deleted Successfully");
+                        }, 2000);
+                        refetch(["users", id] as any);
+                      }}
                       type="button"
                       className="inline-flex justify-center text-[12px] rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                     >

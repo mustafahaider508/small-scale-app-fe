@@ -51,38 +51,31 @@ const UserModal = ({
   const queryClient: any = new QueryClient();
 
   //Add a User
-  const { mutate, isError, error } = useMutation({
+  const mutation = useMutation({
     mutationFn: addUser,
-    onSuccess(data, variables, context) {
-      if (data == "User Already Exist") {
+    onSuccess: (data) => {
+      if (typeof data == "string") {
         toast.error(data);
       } else {
-        toast.success(data?.message);
-        closeModal();
+        queryClient.invalidateQueries({ queryKey: ["users", 1] });
         setSuccess(true);
-        queryClient.invalidateQueries(["users"]);
+        closeModal();
+        toast.success(data?.message);
       }
     },
   });
 
-  //Get User By Id
-  const { data: userData, isSuccess } = useQuery({
-    queryKey: ["users", id],
-    queryFn: () => getSingleUser(id),
-    enabled: !!id,
-  });
-
-  //Edit a User
+  // Edit a User
   const { mutate: editUserMutate } = useMutation({
     mutationFn: editUser,
-    onSuccess(data, variables, context) {
-      if (data == "User Already Exist") {
+    onSuccess(data) {
+      if (typeof data == "string") {
         toast.error(data);
       } else {
         toast.success(data?.message);
-        closeModal();
+        queryClient.invalidateQueries({ queryKey: ["users", 1] });
         setSuccess(true);
-        queryClient.invalidateQueries(["users"]);
+        closeModal();
       }
     },
   });
@@ -93,7 +86,7 @@ const UserModal = ({
       email: values.email,
       phone: values.phone,
     };
-    mutate(data);
+    mutation.mutate(data);
   };
 
   const handleEditSubmit = (values: any) => {

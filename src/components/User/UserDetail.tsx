@@ -10,7 +10,6 @@ const UserDetail = () => {
   const { data } = useQuery({
     queryKey: ["users", id],
     queryFn: () => getSingleUser(id),
-    enabled: !!id,
   });
   return (
     <div>

@@ -29,22 +29,19 @@ const dataSchema = yup.object().shape({
 export default function Login() {
   const { loginUser } = service;
   const formRef: any = useRef();
-  const queryClient: any = new QueryClient();
   const navigate = useNavigate();
 
   const { mutate, isError, error } = useMutation({
     mutationFn: loginUser,
-    onSuccess(data, variables, context) {
+    onSuccess(data) {
       if (typeof data == "string") {
         toast.error(data);
       } else {
         toast.success(data?.message);
         if (data?.data?.user?.role == "admin") {
           window.location.replace(`${process.env.REACT_APP_CLIENTURL}`);
-          queryClient.invalidateQueries(["login"]);
         } else {
           window.location.replace(`${process.env.REACT_APP_CLIENTURL}/jobs`);
-          queryClient.invalidateQueries(["login"]);
         }
       }
     },
